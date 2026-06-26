@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Patient {
+  id               String   @id @default(cuid())
+  hospitalNumber   String   @unique
+
+  firstName        String
+  middleName       String?
+  lastName         String
+
+  gender           String
+  dateOfBirth      DateTime
+
+  phone            String
+  email            String?
+
+  occupation       String?
+  address          String?
+  city             String?
+  state            String?
+  country          String?
+
+  bloodGroup       String?
+  genotype         String?
+  maritalStatus    String?
+
+  emergencyContact String?
+  emergencyPhone   String?
+
+  isActive         Boolean  @default(true)
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
