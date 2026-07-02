@@ -11,10 +11,13 @@ export async function GET() {
 
     return NextResponse.json(patients);
   } catch (error) {
-    console.error(error);
+    console.error("PRISMA ERROR:", error);
 
     return NextResponse.json(
-      { error: "Failed to fetch patients" },
+      {
+        message: "Failed",
+        error: String(error),
+      },
       { status: 500 }
     );
   }
