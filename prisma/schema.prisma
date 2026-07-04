@@ -39,4 +39,28 @@ model Patient {
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  appointments Appointment[]
+  }
+
+  model Appointment {
+  id              String   @id @default(cuid())
+
+  patientId       String
+  patient         Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  appointmentDate DateTime
+  appointmentTime String
+
+  purpose         String
+
+  status          String   @default("Scheduled")
+
+  notes           String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([appointmentDate])
+  @@index([status])
 }

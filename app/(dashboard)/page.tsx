@@ -1,6 +1,17 @@
 import Link from "next/link";
-import { Users, CalendarDays, Wallet, Stethoscope } from "lucide-react";
+import {
+  Users,
+  CalendarDays,
+  Wallet,
+  Stethoscope,
+  UserPlus,
+  CalendarPlus,
+  FileText,
+  ArrowRight,
+} from "lucide-react";
+
 import { prisma } from "@/lib/prisma";
+import StatCard from "@/components/dashboard/StatCard";
 
 export default async function DashboardPage() {
   const patientCount = await prisma.patient.count();
@@ -12,31 +23,48 @@ export default async function DashboardPage() {
     take: 5,
   });
 
+  const today = new Date().toLocaleDateString("en-NG", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <div className="space-y-8">
 
-      {/* Header */}
+      {/* Welcome */}
 
-      <div className="flex items-center justify-between">
+      <div className="rounded-3xl bg-gradient-to-r from-teal-700 via-cyan-700 to-blue-700 p-8 text-white shadow-xl">
 
-        <div>
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
 
-          <h1 className="text-4xl font-bold">
-            🦷 SmileChat EMR
-          </h1>
+          <div>
 
-          <p className="text-slate-500 mt-2">
-            Welcome back, Dr. Ismail.
-          </p>
+            <p className="text-teal-100 text-lg">
+              {today}
+            </p>
+
+            <h1 className="mt-2 text-4xl font-bold">
+              Welcome back,
+              <br />
+              Dr. Ismail 👋
+            </h1>
+
+            <p className="mt-3 text-teal-100 max-w-xl">
+              Here's what's happening in your dental practice today.
+            </p>
+
+          </div>
+
+          <Link
+            href="/patients/new"
+            className="rounded-xl bg-white px-6 py-4 font-semibold text-teal-700 shadow hover:bg-slate-100 transition"
+          >
+            + Register Patient
+          </Link>
 
         </div>
-
-        <Link
-          href="/patients/new"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold"
-        >
-          + Register Patient
-        </Link>
 
       </div>
 
@@ -44,153 +72,237 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
 
-        <div className="bg-white rounded-xl shadow border p-6">
+        <StatCard
+          title="Total Patients"
+          value={patientCount}
+          subtitle="Registered patients"
+          icon={Users}
+          iconColor="text-blue-600"
+          iconBg="bg-blue-100"
+        />
 
-          <div className="flex items-center justify-between">
+        <StatCard
+          title="Appointments"
+          value={0}
+          subtitle="Today's schedule"
+          icon={CalendarDays}
+          iconColor="text-green-600"
+          iconBg="bg-green-100"
+        />
 
-            <div>
+        <StatCard
+          title="Revenue"
+          value="₦0"
+          subtitle="Today's income"
+          icon={Wallet}
+          iconColor="text-yellow-600"
+          iconBg="bg-yellow-100"
+        />
 
-              <p className="text-slate-500">
-                Patients
-              </p>
-
-              <h2 className="text-3xl font-bold mt-2">
-                {patientCount}
-              </h2>
-
-            </div>
-
-            <Users className="h-10 w-10 text-blue-600" />
-
-          </div>
-
-        </div>
-
-        <div className="bg-white rounded-xl shadow border p-6">
-
-          <div className="flex items-center justify-between">
-
-            <div>
-
-              <p className="text-slate-500">
-                Appointments
-              </p>
-
-              <h2 className="text-3xl font-bold mt-2">
-                0
-              </h2>
-
-            </div>
-
-            <CalendarDays className="h-10 w-10 text-green-600" />
-
-          </div>
-
-        </div>
-
-        <div className="bg-white rounded-xl shadow border p-6">
-
-          <div className="flex items-center justify-between">
-
-            <div>
-
-              <p className="text-slate-500">
-                Revenue
-              </p>
-
-              <h2 className="text-3xl font-bold mt-2">
-                ₦0
-              </h2>
-
-            </div>
-
-            <Wallet className="h-10 w-10 text-yellow-600" />
-
-          </div>
-
-        </div>
-
-        <div className="bg-white rounded-xl shadow border p-6">
-
-          <div className="flex items-center justify-between">
-
-            <div>
-
-              <p className="text-slate-500">
-                Treatments
-              </p>
-
-              <h2 className="text-3xl font-bold mt-2">
-                0
-              </h2>
-
-            </div>
-
-            <Stethoscope className="h-10 w-10 text-red-600" />
-
-          </div>
-
-        </div>
+        <StatCard
+          title="Treatments"
+          value={0}
+          subtitle="Completed today"
+          icon={Stethoscope}
+          iconColor="text-red-600"
+          iconBg="bg-red-100"
+        />
 
       </div>
 
-      {/* Recent Patients */}
+      {/* Quick Actions + Recent Patients */}
 
-      <div className="bg-white rounded-xl shadow border">
+      <div className="grid lg:grid-cols-3 gap-6">
 
-        <div className="border-b px-6 py-4">
+        {/* Quick Actions */}
 
-          <h2 className="text-xl font-semibold">
-            Recent Patients
+        <div className="rounded-2xl border bg-white shadow-sm p-6">
+
+          <h2 className="text-xl font-bold mb-6">
+            Quick Actions
           </h2>
 
-        </div>
+          <div className="space-y-4">
 
-        <div className="divide-y">
+            <Link
+              href="/patients/new"
+              className="flex items-center justify-between rounded-xl border p-4 hover:bg-slate-50 transition"
+            >
+              <div className="flex items-center gap-3">
 
-          {recentPatients.length === 0 ? (
+                <div className="rounded-xl bg-blue-100 p-3">
 
-            <div className="p-6 text-slate-500">
-              No patients yet.
-            </div>
+                  <UserPlus className="h-5 w-5 text-blue-600" />
 
-          ) : (
-
-            recentPatients.map((patient) => (
-
-              <div
-                key={patient.id}
-                className="flex items-center justify-between p-6 hover:bg-slate-50"
-              >
+                </div>
 
                 <div>
 
                   <p className="font-semibold">
-
-                    {patient.firstName} {patient.lastName}
-
+                    Register Patient
                   </p>
 
                   <p className="text-sm text-slate-500">
-
-                    {patient.hospitalNumber}
-
+                    Add a new patient
                   </p>
 
                 </div>
 
-                <Link
-                  href={`/patients/${patient.id}`}
-                  className="text-blue-600 hover:underline"
-                >
-                  View
-                </Link>
+              </div>
+
+              <ArrowRight className="h-5 w-5 text-slate-400" />
+
+            </Link>
+
+            <button
+              className="w-full flex items-center justify-between rounded-xl border p-4 hover:bg-slate-50 transition"
+            >
+              <div className="flex items-center gap-3">
+
+                <div className="rounded-xl bg-green-100 p-3">
+
+                  <CalendarPlus className="h-5 w-5 text-green-600" />
+
+                </div>
+
+                <div className="text-left">
+
+                  <p className="font-semibold">
+                    New Appointment
+                  </p>
+
+                  <p className="text-sm text-slate-500">
+                    Coming soon
+                  </p>
+
+                </div>
 
               </div>
 
-            ))
+              <ArrowRight className="h-5 w-5 text-slate-400" />
 
-          )}
+            </button>
+
+            <button
+              className="w-full flex items-center justify-between rounded-xl border p-4 hover:bg-slate-50 transition"
+            >
+              <div className="flex items-center gap-3">
+
+                <div className="rounded-xl bg-purple-100 p-3">
+
+                  <FileText className="h-5 w-5 text-purple-600" />
+
+                </div>
+
+                <div className="text-left">
+
+                  <p className="font-semibold">
+                    Clinical Records
+                  </p>
+
+                  <p className="text-sm text-slate-500">
+                    Coming soon
+                  </p>
+
+                </div>
+
+              </div>
+
+              <ArrowRight className="h-5 w-5 text-slate-400" />
+
+            </button>
+
+          </div>
+
+        </div>
+
+        {/* Recent Patients */}
+
+        <div className="lg:col-span-2 rounded-2xl border bg-white shadow-sm">
+
+          <div className="flex items-center justify-between border-b px-6 py-5">
+
+            <h2 className="text-xl font-bold">
+              Recent Patients
+            </h2>
+
+            <Link
+              href="/patients"
+              className="text-sm font-semibold text-teal-600 hover:underline"
+            >
+              View All
+            </Link>
+
+          </div>
+
+          <div>
+
+            {recentPatients.length === 0 ? (
+
+              <div className="py-20 text-center">
+
+                <Users className="mx-auto h-14 w-14 text-slate-300" />
+
+                <h3 className="mt-4 text-lg font-semibold">
+                  No Patients Yet
+                </h3>
+
+                <p className="mt-2 text-slate-500">
+                  Start by registering your first patient.
+                </p>
+
+              </div>
+
+            ) : (
+
+              recentPatients.map((patient) => (
+
+                <div
+                  key={patient.id}
+                  className="flex items-center justify-between border-b last:border-none px-6 py-5 hover:bg-slate-50 transition"
+                >
+
+                  <div className="flex items-center gap-4">
+
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-lg font-bold text-white">
+
+                      {patient.firstName.charAt(0)}
+                      {patient.lastName.charAt(0)}
+
+                    </div>
+
+                    <div>
+
+                      <p className="font-semibold">
+
+                        {patient.firstName} {patient.lastName}
+
+                      </p>
+
+                      <p className="text-sm text-slate-500">
+
+                        {patient.hospitalNumber}
+
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                  <Link
+                    href={`/patients/${patient.id}`}
+                    className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-100 transition"
+                  >
+                    View
+                  </Link>
+
+                </div>
+
+              ))
+
+            )}
+
+          </div>
 
         </div>
 

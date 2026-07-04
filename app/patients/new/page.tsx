@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
-import { Button } from "@/components/ui/Button"; // <-- FIXED
+import { Button } from "@/components/ui/button";
 
 export default function NewPatientPage() {
   const router = useRouter();
