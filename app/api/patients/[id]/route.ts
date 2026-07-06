@@ -15,7 +15,9 @@ export async function GET(
     const { id } = await params;
 
     const patient = await prisma.patient.findUnique({
-      where: { id },
+      where: {
+        id,
+      },
     });
 
     if (!patient) {
@@ -30,8 +32,12 @@ export async function GET(
     console.error(error);
 
     return NextResponse.json(
-      { message: "Failed to fetch patient." },
-      { status: 500 }
+      {
+        message: "Failed to fetch patient.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
@@ -45,16 +51,17 @@ export async function PUT(
     const body = await req.json();
 
     const patient = await prisma.patient.update({
-      where: { id },
+      where: {
+        id,
+      },
       data: {
         hospitalNumber: body.hospitalNumber,
         firstName: body.firstName,
         middleName: body.middleName || null,
         lastName: body.lastName,
         gender: body.gender,
-        dateOfBirth: body.dateOfBirth
-          ? new Date(body.dateOfBirth)
-          : null,
+
+        dateOfBirth: new Date(body.dateOfBirth),
 
         phone: body.phone,
         email: body.email || null,
@@ -79,8 +86,12 @@ export async function PUT(
     console.error(error);
 
     return NextResponse.json(
-      { message: "Failed to update patient." },
-      { status: 500 }
+      {
+        message: "Failed to update patient.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
@@ -105,8 +116,12 @@ export async function DELETE(
     console.error(error);
 
     return NextResponse.json(
-      { message: "Failed to delete patient." },
-      { status: 500 }
+      {
+        message: "Failed to delete patient.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

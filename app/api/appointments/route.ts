@@ -13,12 +13,16 @@ export async function GET() {
     });
 
     return NextResponse.json(appointments);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
 
     return NextResponse.json(
-      { message: "Failed to fetch appointments." },
-      { status: 500 }
+      {
+        message: error.message,
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
@@ -44,12 +48,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(appointment, {
       status: 201,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
 
     return NextResponse.json(
       {
-        message: "Failed to create appointment.",
+        message: error.message,
       },
       {
         status: 500,
